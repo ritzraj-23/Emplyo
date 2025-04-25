@@ -14,27 +14,35 @@ const CreateTask = () => {
     const [newTask, setNewTask] = useState({})
 
     const submitHandler = (e) => {
-        e.preventDefault()
+        e.preventDefault();
 
-        setNewTask({ taskTitle, taskDescription, taskDate, category, active: false, newTask: true, failed: false, completed: false })
+        // Create a new task object
+        const task = { taskTitle, taskDescription, taskDate, category, active: false, newTask: true, failed: false, completed: false };
 
-        const data = userData
-
-        data.forEach(function (elem) {
-            if (asignTo == elem.firstName) {
-                elem.tasks.push(newTask)
-                elem.taskCounts.newTask = elem.taskCounts.newTask + 1
+        // Create a new copy of userData to avoid mutating the original state
+        const updatedUserData = userData.map((elem) => {
+            if (asignTo === elem.firstName) {
+                return {
+                    ...elem,
+                    tasks: [...elem.tasks, task], // Add the new task to the tasks array
+                    taskCounts: {
+                        ...elem.taskCounts,
+                        newTask: elem.taskCounts.newTask + 1, // Increment the newTask count
+                    },
+                };
             }
-        })
-        setUserData(data)
-        console.log(data);
+            return elem;
+        });
 
-        setTaskTitle('')
-        setCategory('')
-        setAsignTo('')
-        setTaskDate('')
-        setTaskDescription('')
+        // Update the userData state with the new copy
+        setUserData(updatedUserData);
 
+        // Clear the form fields
+        setTaskTitle('');
+        setCategory('');
+        setAsignTo('');
+        setTaskDate('');
+        setTaskDescription('');
     }
 
     return (
